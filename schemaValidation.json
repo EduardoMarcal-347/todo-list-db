@@ -51,7 +51,6 @@
                 },
                 "email": {
                     "bsonType": "string",
-                    "format": "email",
                     "description": "User email."
                 },
                 "cell_phone": {
