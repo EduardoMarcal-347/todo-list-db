@@ -1,0 +1,104 @@
+use to_do_db;
+
+db.createCollection('task', {
+   validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["title", "description", "start_date", "priority", "status", "user", "project"],
+            additionalProperties: false,
+            properties: {
+                _id: {
+                    bsonType: "objectId"
+                },
+                title: {
+                    bsonType: "string",
+                    maxLength: 30,
+                    description: "Task title. Must be a string with a maximum of 30 characters."
+                },
+                description: {
+                    bsonType: "string",
+                    maxLength: 60,
+                    description: "Task description. Must be a string with a maximum of 60 characters."
+                },
+                start_date: {
+                    bsonType: "date",
+                    description: "Task start date."
+                },
+                deadline_date: {
+                    bsonType: ["date", "null"],
+                    description: "Task deadline date (optional)."
+                },
+                priority: {
+                    bsonType: "int",
+                    minimum: 1,
+                    maximum: 3,
+                    description: "Task priority level. An integer between 1 and 3. 1 is the lowest priority, and 3 is the highest."
+                },
+                status: {
+                    bsonType: "string",
+                    enum: ["to do", "in progress", "done"]
+                },
+                user: {
+                    bsonType: "object",
+                    required: ["first_name", "last_name", "email", "cell_phone"],
+                    additionalProperties: false,
+                    properties: {
+                        first_name: {
+                            bsonType: "string",
+                            maxLength: 15,
+                            description: "User first name."
+                        },
+                        last_name: {
+                            bsonType: "string",
+                            maxLength: 70,
+                            description: "User last name."
+                        },
+                        email: {
+                            bsonType: "string",
+                            description: "User email."
+                        },
+                        cell_phone: {
+                            bsonType: "string",
+                            pattern: "^\\(\\d{2}\\)\\d{4,5}-\\d{4}$",
+                            description: "User cellphone. Must be in the format (00)90000-0000."
+                        }
+                    }
+                },
+                project: {
+                    bsonType: "object",
+                    required: ["name", "start_date"],
+                    additionalProperties: false,
+                    properties: {
+                        name: {
+                            bsonType: "string",
+                            maxLength: 50,
+                            description: "Project name."
+                        },
+                        start_date: {
+                            bsonType: "date",
+                            description: "Project start date."
+                        },
+                        deadline_date: {
+                            bsonType: ["date", "null"],
+                            description: "Project deadline date (optional)."
+                        }
+                    }
+                },
+                tasks: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        required: ["_id"],
+                        properties: {
+                            _id: {
+                                bsonType: "objectId"
+                            }
+                        }
+                    },
+                    uniqueItems: true,
+                    description: "A list of tasks associated with this document. Each task is represented by an object containing a unique ID."
+                }
+            }
+        }
+   }
+});
